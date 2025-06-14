@@ -1,0 +1,34 @@
+
+POST http://localhost:3000/project?userEmail=admin@example.com
+Content-Type: application/json
+
+{
+  "title": "Test Project",
+  "description": "A sample project",
+  "duedate": "2025-07-01T00:00:00.000Z"
+}
+
+### Get all projects for a user
+GET http://localhost:3000/project?userEmail=admin@example.com
+
+### Assign a user to a project
+POST http://localhost:3000/project/assign?userEmail=admin@example.com
+Content-Type: application/json
+
+{
+  "projectTitle": "Test Project",
+  "userId": "user123"
+}
+
+
+
+##### Get all projects assigned to a user
+GET http://localhost:3000/project/assigned?userId=user123
+
+### Complete a project
+POST http://localhost:3000/project/complete
+Content-Type: application/json
+
+{
+  "userId": "user123"
+}

@@ -1,0 +1,194 @@
+body {
+  font-family: "Segoe UI", sans-serif;
+  margin: 0;
+  background: #f9fafb;
+  color: #1f2937;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  min-height: 100vh;
+}
+
+.dark-toggle {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin-left: -30px;
+  width: 100%;
+  max-width: 1200px;
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  background: #4f46e5;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1rem;
+  z-index: 999;
+}
+
+#register-btn {
+  margin-top: 1rem;
+}
+
+.logout-btn {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logout-btn:hover {
+  background-color: #dc2626;
+}
+
+.card {
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 700px;
+  margin-bottom: 2rem;
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+}
+
+h2,
+h3 {
+  margin-top: 0;
+  color: #4f46e5;
+}
+
+form,
+section {
+  margin-bottom: 1.5rem;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 12px;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  font-size: 1rem;
+  background: #fff;
+  transition: border 0.2s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #4f46e5;
+  outline: none;
+}
+
+button {
+  background-color: #4f46e5;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  width: 100%;
+  transition: background-color 0.2s ease;
+  font-size: 1rem;
+}
+
+button:hover {
+  background-color: #3730a3;
+}
+
+button i {
+  margin-right: 6px;
+}
+
+#completed-list {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+#completed-list li {
+  background: #e0f2fe;
+  margin-bottom: 0.5rem;
+  padding: 0.75rem;
+  border-left: 5px solid #38bdf8;
+  border-radius: 10px;
+}
+
+/* DARK MODE */
+body.dark {
+  background: #1e293b;
+  color: #f1f5f9;
+}
+
+body.dark .card {
+  background: #334155;
+  color: #f8fafc;
+}
+
+body.dark input,
+body.dark textarea,
+body.dark select {
+  background: #475569;
+  border: 1px solid #64748b;
+  color: white;
+}
+
+body.dark button {
+  background-color: #0ea5e9;
+}
+
+body.dark #completed-list li {
+  background: #1d4ed8;
+  border-left-color: #38bdf8;
+  color: white;
+}
+
+/* responsivenesss */
+@media (max-width: 768px) {
+  .card {
+    padding: 1rem;
+    margin-top: 1rem;
+    width: 95%;
+  }
+
+  input,
+  textarea,
+  select,
+  button {
+    font-size: 1rem;
+    padding: 10px;
+  }
+
+  h2,
+  h3 {
+    font-size: 1.3rem;
+  }
+
+  .dark-toggle {
+    top: 0.5rem;
+    right: 0.5rem;
+    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+  }
+}
