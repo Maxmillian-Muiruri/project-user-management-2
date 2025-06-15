@@ -31,3 +31,4 @@ model Project {
   assignedUser   User?    @relation(fields: [assignedUserId], references: [id])
   assignedUserId String?  // Foreign key to User
 }
+

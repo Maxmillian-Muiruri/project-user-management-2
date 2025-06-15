@@ -12,28 +12,21 @@
   </head>
   <body>
     <button id="toggle-dark-mode" class="dark-toggle">
-      🌙 Toggle Dark Mode
+      <i class="fas fa-moon"></i> Dark Mode
     </button>
+    
     <div id="app">
       <div class="card" id="login-section">
-        <h2><i class="fas fa-sign-in-alt"></i> Login / Register</h2>
+        <h2><i class="fas fa-sign-in-alt"></i> Welcome</h2>
+        <p class="subtitle">Sign in to your account</p>
         <form id="auth-form">
           <input type="email" id="email" placeholder="Email" required />
-          <input
-            type="password"
-            id="password"
-            placeholder="Password"
-            required
-          />
+          <input type="password" id="password" placeholder="Password" required />
           <div class="auth-actions">
-            <button type="submit" id="login-btn">
+            <button type="submit" id="login-btn" class="btn-primary">
               <i class="fas fa-right-to-bracket"></i> Login
             </button>
-            <button
-              type="button"
-              id="register-btn"
-              style="background-color: green"
-            >
+            <button type="button" id="register-btn" class="btn-secondary">
               <i class="fas fa-user-plus"></i> Register
             </button>
           </div>
@@ -42,34 +35,25 @@
       </div>
 
       <div class="card" id="admin-dashboard" style="display: none">
-        <!-- <div class="card" id="admin-dashboard"> -->
-        <button id="logout-btn" class="logout-btn">
-          <i class="fas fa-arrow-left"></i> Logout
-        </button>
-
-        <h2><i class="fas fa-user-shield"></i> Admin Dashboard</h2>
+        <div class="header">
+          <h2><i class="fas fa-user-shield"></i> Admin Dashboard</h2>
+          <button id="logout-btn" class="logout-btn">
+            <i class="fas fa-arrow-left"></i> Logout
+          </button>
+        </div>
 
         <section>
-          <h3><i class="fas fa-users"></i> Registered Users</h3>
+          <h3><i class="fas fa-users"></i> Users</h3>
           <ul id="user-list"></ul>
         </section>
 
         <section>
           <h3><i class="fas fa-folder-plus"></i> Add Project</h3>
           <form id="project-form">
-            <input
-              type="text"
-              id="project-name"
-              placeholder="Project Name"
-              required
-            />
-            <textarea
-              id="project-desc"
-              placeholder="Project Description"
-              required
-            ></textarea>
+            <input type="text" id="project-name" placeholder="Project Name" required />
+            <textarea id="project-desc" placeholder="Project Description" required></textarea>
             <input type="date" id="project-end" required />
-            <button type="submit" style="background-color: green">
+            <button type="submit" class="btn-success">
               <i class="fas fa-plus-circle"></i> Add Project
             </button>
           </form>
@@ -80,7 +64,7 @@
           <form id="assign-form">
             <select id="user-select"></select>
             <select id="project-select"></select>
-            <button type="submit" style="background-color: orange">
+            <button type="submit" class="btn-warning">
               <i class="fas fa-share"></i> Assign
             </button>
           </form>
@@ -89,23 +73,23 @@
         <section>
           <h3><i class="fas fa-trash"></i> Delete Project</h3>
           <select id="delete-project-select"></select>
-          <button id="delete-btn" style="background-color: red">
-            <i class="fas fa-trash-alt"></i>
-            Delete
+          <button id="delete-btn" class="btn-danger">
+            <i class="fas fa-trash-alt"></i> Delete
           </button>
         </section>
       </div>
 
       <div class="card" id="user-dashboard" style="display: none">
-        <!-- <div class="card" id="user-dashboard"> -->
-        <button id="logout-btn-user" class="logout-btn">
-          <i class="fas fa-arrow-left"></i> Logout
-        </button>
-
-        <h2><i class="fas fa-user"></i> User Dashboard</h2>
+        <div class="header">
+          <h2><i class="fas fa-user"></i> My Dashboard</h2>
+          <button id="logout-btn-user" class="logout-btn">
+            <i class="fas fa-arrow-left"></i> Logout
+          </button>
+        </div>
+        
         <div id="assigned-project"></div>
         <div id="update-section" style="display: none">
-          <button id="complete-project">
+          <button id="complete-project" class="btn-success">
             <i class="fas fa-check"></i> Mark as Completed
           </button>
         </div>

@@ -18,7 +18,7 @@ import { MailerModule } from './mailer/mailer.module';
     ProjectModule,
     UserModule,
     PrismaModule,
-     MailerModule,
+    MailerModule,
   ],
   controllers: [AppController],
   providers: [AppService, ProjectService, UserService],
