@@ -8,18 +8,23 @@ import {
   Param,
   Post,
   Query,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ProjectService } from './project.service';
-import { Project } from './interface/project.interface';
+import { CreateProjectDto } from './dto/create-project.dto';
 
 @Controller('project')
+@UsePipes(new ValidationPipe())
 export class ProjectController {
   constructor(private readonly projectService: ProjectService) {}
 
-  // Admin: Create a project
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() data: Project, @Query('userEmail') userEmail: string) {
+  create(
+    @Body() data: CreateProjectDto,
+    @Query('userEmail') userEmail: string,
+  ) {
     try {
       const project = this.projectService.createProject(data, userEmail);
       return {
@@ -36,11 +41,10 @@ export class ProjectController {
     }
   }
 
-  // Admin: Get all projects
   @Get()
-  getAll(@Query('userEmail') userEmail: string) {
+  async getAll(@Query('userEmail') userEmail: string) {
     try {
-      const projects = this.projectService.getAllProjects(userEmail);
+      const projects = await this.projectService.getAllProjects(userEmail);
       return {
         success: true,
         message: `Retrieved ${projects.length} projects`,
@@ -55,14 +59,13 @@ export class ProjectController {
     }
   }
 
-  // Admin: Assign a project to a user
   @Post('assign')
-  assign(
+  async assign(
     @Query('userEmail') userEmail: string,
     @Body() body: { projectTitle: string; userId: string },
   ) {
     try {
-      const result = this.projectService.assignProjectToUser(
+      const result = await this.projectService.assignProjectToUser(
         body.projectTitle,
         body.userId,
         userEmail,
@@ -80,11 +83,13 @@ export class ProjectController {
     }
   }
 
-  // Admin: Delete a project
   @Delete(':title')
-  delete(@Param('title') title: string, @Query('userEmail') userEmail: string) {
+  async delete(
+    @Param('title') title: string,
+    @Query('userEmail') userEmail: string,
+  ) {
     try {
-      const result = this.projectService.deleteProject(title, userEmail);
+      const result = await this.projectService.deleteProject(title, userEmail);
       return {
         success: true,
         message: result.message,

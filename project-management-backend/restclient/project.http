@@ -17,7 +17,7 @@ Content-Type: application/json
 
 {
   "projectTitle": "Test Project",
-  "userId": "user123"
+  "userId": "357c0841-763e-4e56-92bc-eb192020b52a"
 }
 
 
@@ -32,3 +32,35 @@ Content-Type: application/json
 {
   "userId": "user123"
 }
+
+
+### Path: project-management-backend/restclient/user.http
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "user123",
+  "name": "Regular User"
+}
+
+
+### Get all users
+GET http://localhost:3000/users
+
+### Get a user by id
+GET http://localhost:3000/users/357c0841-763e-4e56-92bc-eb192020b52a
+
+
+### Update a user
+PUT http://localhost:3000/users/357c0841-763e-4e56-92bc-eb192020b52a
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "user123",
+  "name": "Regular User2"
+}
+
+### Delete a user
+DELETE http://localhost:3000/users/1749980213261
