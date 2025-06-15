@@ -101,7 +101,6 @@
 // }
 
 
-
 import {
   Injectable,
   ConflictException,
@@ -109,21 +108,19 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { Project } from './interface/project.interface';
-import { MailerService } from '../mailer/mailer.service';
-import { SendEmailDto } from '../mailer/dto/send-email.dto';
+import { MailerService } from '../mailer/mailer.service'; //Import custom MailerService
 
 @Injectable()
 export class ProjectService {
   private projects: Project[] = [];
   private readonly adminEmail = 'admin@example.com'; // Only one admin
 
-  constructor(private readonly mailerService: MailerService) {}
+  constructor(private readonly mailerService: MailerService) {} // Inject mailer
 
   private isAdmin(userEmail: string): boolean {
     return userEmail === this.adminEmail;
   }
 
-  // Admin: Create a project
   createProject(data: Project, userEmail: string): Project {
     if (!this.isAdmin(userEmail)) {
       throw new ForbiddenException('Only admin can create projects');
@@ -143,7 +140,6 @@ export class ProjectService {
     return newProject;
   }
 
-  // Admin: Get all projects
   getAllProjects(userEmail: string): Project[] {
     if (!this.isAdmin(userEmail)) {
       throw new ForbiddenException('Only admin can view all projects');
@@ -154,7 +150,6 @@ export class ProjectService {
     return this.projects;
   }
 
-  // Admin: Assign a project to a user (one project per user)
   async assignProjectToUser(
     projectTitle: string,
     userId: string,
@@ -163,33 +158,23 @@ export class ProjectService {
     if (!this.isAdmin(userEmail)) {
       throw new ForbiddenException('Only admin can assign projects');
     }
-
     const project = this.projects.find((p) => p.title === projectTitle);
     if (!project) throw new NotFoundException('Project not found');
-
     if (project.assignedUserId)
       throw new ConflictException('Project already assigned');
-
     const alreadyAssigned = this.projects.find(
       (p) => p.assignedUserId === userId,
     );
     if (alreadyAssigned)
       throw new ConflictException('User already assigned to a project');
-
     project.assignedUserId = userId;
 
-    //  Send email to user
-    const email: SendEmailDto = {
-      to: `${userId}@example.com`, // Replace with actual user email
-      subject: 'Project Assignment',
-      text: `You have been assigned the project: ${projectTitle}`,
-    };
-    await this.mailerService.sendMail(email);
+    // Send email to user 
+    await this.mailerService.sendAssignmentEmail(userId, projectTitle);
 
     return `Project '${projectTitle}' assigned to user '${userId}'`;
   }
 
-  // Admin: Delete a project
   deleteProject(projectTitle: string, userEmail: string): { message: string } {
     if (!this.isAdmin(userEmail)) {
       throw new ForbiddenException('Only admin can delete projects');
@@ -200,26 +185,23 @@ export class ProjectService {
     return { message: `Project '${projectTitle}' deleted` };
   }
 
-  // User: View assigned project
   getUserAssignedProject(userId: string): Project | { message: string } {
     const project = this.projects.find((p) => p.assignedUserId === userId);
     if (!project) return { message: 'No project assigned' };
     return project;
   }
 
-  // User: Mark project as completed, admin gets notified
   async completeProject(userId: string): Promise<{ message: string }> {
     const project = this.projects.find((p) => p.assignedUserId === userId);
     if (!project) throw new NotFoundException('No project assigned');
     project.completed = true;
 
-    //Send email to admin
-    const email: SendEmailDto = {
-      to: this.adminEmail,
-      subject: 'Project Completed',
-      text: `The project '${project.title}' has been marked as completed by user '${userId}'.`,
-    };
-    await this.mailerService.sendMail(email);
+    // Notify admin
+    await this.mailerService.notifyAdminOnCompletion(
+      this.adminEmail,
+      project.title,
+      userId,
+    );
 
     return {
       message: `Project '${project.title}' marked as completed. Admin notified.`,
