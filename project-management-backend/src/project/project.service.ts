@@ -1,9 +1,8 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-redundant-type-constituents */
-/* eslint-disable @typescript-eslint/require-await */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
+
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
+
 import {
   Injectable,
   ConflictException,
@@ -26,6 +25,7 @@ export class ProjectService {
     private readonly mailerService: MailerService,
   ) {}
 
+  // Helper to check admin
   private isAdmin(userEmail: string): boolean {
     return userEmail === this.adminEmail;
   }
@@ -117,6 +117,8 @@ export class ProjectService {
         to: `${userId}@example.com`, // In real app, get email from user record
         subject: 'Project Assignment',
         text: `You have been assigned to project: ${projectTitle}`,
+        project: '',
+        name: '',
       };
       await this.mailerService.sendMail(email);
     } catch (emailError) {
@@ -159,46 +161,38 @@ export class ProjectService {
   }
 
   async completeProject(userId: string): Promise<{ message: string }> {
-    return this.prisma.$transaction(
-      async (prisma: {
-        project: {
-          findFirst: (arg0: { where: { assignedUserId: string } }) => any;
-          update: (arg0: {
-            where: { id: any };
-            data: { completed: boolean; updatedAt: Date };
-          }) => any;
+    return this.prisma.$transaction(async (prisma) => {
+      const project = await prisma.project.findFirst({
+        where: { assignedUserId: userId },
+      });
+
+      if (!project) {
+        throw new NotFoundException('No project assigned');
+      }
+
+      const updatedProject = await prisma.project.update({
+        where: { id: project.id },
+        data: { completed: true, updatedAt: new Date() },
+      });
+
+      try {
+        const email: SendEmailDto = {
+          to: this.adminEmail,
+          subject: 'Project Completed',
+          text: `Project "${updatedProject.title}" completed by user ${userId}`,
+          project: '',
+          name: '',
         };
-      }) => {
-        const project = await prisma.project.findFirst({
-          where: { assignedUserId: userId },
-        });
+        await this.mailerService.sendMail(email);
+      } catch (emailError) {
+        this.logger.error(
+          `Failed to send completion email: ${emailError.message}`,
+        );
+      }
 
-        if (!project) {
-          throw new NotFoundException('No project assigned');
-        }
-
-        const updatedProject = await prisma.project.update({
-          where: { id: project.id },
-          data: { completed: true, updatedAt: new Date() },
-        });
-
-        try {
-          const email: SendEmailDto = {
-            to: this.adminEmail,
-            subject: 'Project Completed',
-            text: `Project "${updatedProject.title}" completed by user ${userId}`,
-          };
-          await this.mailerService.sendMail(email);
-        } catch (emailError) {
-          this.logger.error(
-            `Failed to send completion email: ${emailError.message}`,
-          );
-        }
-
-        return {
-          message: `Project '${updatedProject.title}' marked as completed. Admin notified.`,
-        };
-      },
-    );
+      return {
+        message: `Project '${updatedProject.title}' marked as completed. Admin notified.`,
+      };
+    });
   }
 }
