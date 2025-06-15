@@ -64,3 +64,4 @@ Content-Type: application/json
 
 ### Delete a user
 DELETE http://localhost:3000/users/1749980213261
+
