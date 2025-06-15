@@ -100,7 +100,6 @@
 //   }
 // }
 
-
 import {
   Injectable,
   ConflictException,
@@ -108,29 +107,34 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { Project } from './interface/project.interface';
-import { MailerService } from '../mailer/mailer.service'; //Import custom MailerService
+import { MailerService } from '../mailer/mailer.service';
+import { SendEmailDto } from '../mailer/dto/send-email.dto';
 
 @Injectable()
 export class ProjectService {
   private projects: Project[] = [];
-  private readonly adminEmail = 'admin@example.com'; // Only one admin
+  private readonly adminEmail = 'admin@example.com'; // Use your admin's actual email
 
-  constructor(private readonly mailerService: MailerService) {} // Inject mailer
+  constructor(private readonly mailerService: MailerService) {}
 
+  // Helper to check admin
   private isAdmin(userEmail: string): boolean {
     return userEmail === this.adminEmail;
   }
 
+  // Admin: Create a project
   createProject(data: Project, userEmail: string): Project {
     if (!this.isAdmin(userEmail)) {
       throw new ForbiddenException('Only admin can create projects');
     }
+
     const existing = this.projects.find((p) => p.title === data.title);
     if (existing) {
       throw new ConflictException(
         `Project with title ${data.title} already exists`,
       );
     }
+
     const newProject: Project = {
       ...data,
       completed: typeof data.completed === 'boolean' ? data.completed : false,
@@ -140,16 +144,20 @@ export class ProjectService {
     return newProject;
   }
 
+  // Admin: Get all projects
   getAllProjects(userEmail: string): Project[] {
     if (!this.isAdmin(userEmail)) {
       throw new ForbiddenException('Only admin can view all projects');
     }
+
     if (this.projects.length === 0) {
       throw new ConflictException('No projects found');
     }
+
     return this.projects;
   }
 
+  // Admin: Assign a project to a user (one project per user)
   async assignProjectToUser(
     projectTitle: string,
     userId: string,
@@ -158,50 +166,68 @@ export class ProjectService {
     if (!this.isAdmin(userEmail)) {
       throw new ForbiddenException('Only admin can assign projects');
     }
+
     const project = this.projects.find((p) => p.title === projectTitle);
     if (!project) throw new NotFoundException('Project not found');
+
     if (project.assignedUserId)
       throw new ConflictException('Project already assigned');
+
     const alreadyAssigned = this.projects.find(
       (p) => p.assignedUserId === userId,
     );
     if (alreadyAssigned)
       throw new ConflictException('User already assigned to a project');
+
     project.assignedUserId = userId;
 
-    // Send email to user 
-    await this.mailerService.sendAssignmentEmail(userId, projectTitle);
+    // Simulate email - in real case, get user email from DB
+    await this.mailerService.sendMail({
+      to: 'user@example.com', // Replace with actual user email
+      subject: 'You have been assigned a new project',
+      name: 'User', // Replace with actual name
+      project: projectTitle,
+      text: ''
+    });
 
     return `Project '${projectTitle}' assigned to user '${userId}'`;
   }
 
+  // Admin: Delete a project
   deleteProject(projectTitle: string, userEmail: string): { message: string } {
     if (!this.isAdmin(userEmail)) {
       throw new ForbiddenException('Only admin can delete projects');
     }
+
     const idx = this.projects.findIndex((p) => p.title === projectTitle);
     if (idx === -1) throw new NotFoundException('Project not found');
+
     this.projects.splice(idx, 1);
     return { message: `Project '${projectTitle}' deleted` };
   }
 
+  // User: View assigned project
   getUserAssignedProject(userId: string): Project | { message: string } {
     const project = this.projects.find((p) => p.assignedUserId === userId);
     if (!project) return { message: 'No project assigned' };
     return project;
   }
 
+  // User: Mark project as completed, admin gets notified
   async completeProject(userId: string): Promise<{ message: string }> {
     const project = this.projects.find((p) => p.assignedUserId === userId);
     if (!project) throw new NotFoundException('No project assigned');
+
     project.completed = true;
 
-    // Notify admin
-    await this.mailerService.notifyAdminOnCompletion(
-      this.adminEmail,
-      project.title,
-      userId,
-    );
+    // Notify admin via email
+    await this.mailerService.sendMail({
+      to: this.adminEmail,
+      subject: 'A project was completed',
+      name: 'Admin',
+      project: project.title,
+      text: ''
+    });
 
     return {
       message: `Project '${project.title}' marked as completed. Admin notified.`,

@@ -1,30 +1,19 @@
-// src/mailer/mailer.service.ts
 import { Injectable } from '@nestjs/common';
 import { MailerService as NestMailerService } from '@nestjs-modules/mailer';
+import { SendEmailDto } from './dto/send-email.dto';
 
 @Injectable()
 export class MailerService {
   constructor(private readonly mailerService: NestMailerService) {}
 
-  async sendAssignmentEmail(to: string, projectTitle: string): Promise<void> {
+  async sendMail(dto: SendEmailDto): Promise<void> {
     await this.mailerService.sendMail({
-      to,
-      subject: 'New Project Assigned',
-      template: 'assigned', // assigned.ejs
+      to: dto.to,
+      subject: dto.subject,
+      template: 'assignment', // file: templates/assignment.hbs or .ejs
       context: {
-        projectTitle,
-      },
-    });
-  }
-
-  async notifyAdminOnCompletion(adminEmail: string, projectTitle: string, userId: string): Promise<void> {
-    await this.mailerService.sendMail({
-      to: adminEmail,
-      subject: 'Project Completed',
-      template: 'completed', // completed.ejs
-      context: {
-        projectTitle,
-        userId,
+        name: dto.name,
+        project: dto.project,
       },
     });
   }

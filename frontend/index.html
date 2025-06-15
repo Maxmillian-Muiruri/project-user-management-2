@@ -1,110 +1,62 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ProjectFlow</title>
-    <link rel="stylesheet" href="styles.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-    />
-  </head>
-  <body>
-    <button id="toggle-dark-mode" class="dark-toggle">🌙</button>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mailer UI</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }
+    .card { background: white; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    input { display: block; width: 100%; padding: 8px; margin: 10px 0; }
+    button { padding: 10px 15px; background: #007bff; color: white; border: none; cursor: pointer; }
+    button:hover { background: #0056b3; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Send Assignment Email</h2>
+    <input id="assignEmail" type="email" placeholder="User Email" />
+    <input id="assignProject" type="text" placeholder="Project Title" />
+    <button onclick="sendAssignment()">Send Assignment</button>
+    <p id="assignResponse"></p>
+  </div>
 
-    <nav class="navbar">
-      <div class="nav-container">
-        <a href="#home" class="logo"
-          ><i class="fas fa-project-diagram"></i> ProjectFlow</a
-        >
-        <ul class="nav-links">
-          <li><a href="#home">Home</a></li>
-          <li><a href="#features">Features</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#login-section">Login</a></li>
-        </ul>
-      </div>
-    </nav>
+  <div class="card">
+    <h2>Notify Admin on Completion</h2>
+    <input id="adminEmail" type="email" placeholder="Admin Email" />
+    <input id="completionProject" type="text" placeholder="Project Title" />
+    <input id="userId" type="text" placeholder="User ID" />
+    <button onclick="notifyAdmin()">Notify Admin</button>
+    <p id="completeResponse"></p>
+  </div>
 
-    <section id="home" class="section hero">
-      <div class="container">
-        <h1>Welcome to ProjectFlow</h1>
-        <p>Simple task and user management for developers and schools.</p>
-        <h3>Why Choose ProjectFlow?</h3>
-        <p>
-          Streamline your workflow, improve collaboration, and boost
-          productivity with our intuitive platform.
-        </p>
-      </div>
-    </section>
+  <script>
+    async function sendAssignment() {
+      const email = document.getElementById('assignEmail').value;
+      const project = document.getElementById('assignProject').value;
 
-    <section id="features" class="section">
-      <div class="container">
-        <h2>Features</h2>
-        <ul>
-          <li><i class="fas fa-user-plus"></i> User Registration</li>
-          <li><i class="fas fa-tasks"></i> Project Assignment</li>
-          <li><i class="fas fa-check-circle"></i> Completion Tracking</li>
-          <li><i class="fas fa-chart-line"></i> Progress Analytics</li>
-        </ul>
-      </div>
-    </section>
+      const res = await fetch('/mailer/send-assignment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, project }),
+      });
+      const data = await res.json();
+      document.getElementById('assignResponse').textContent = data.message || 'Done';
+    }
 
-    <section id="about" class="section">
-      <div class="container">
-        <h2>About</h2>
-        <p>
-          ProjectFlow is a lightweight web app built to help manage projects and
-          team members efficiently.
-        </p>
-        <p>
-          Our mission is to empower developers and companies to achieve their
-          goals through effective task management and seamless collaboration.
-        </p>
-        <p>
-          Developed by a passionate team dedicated to creating user-friendly and
-          efficient project management solutions.
-        </p>
-      </div>
-    </section>
+    async function notifyAdmin() {
+      const adminEmail = document.getElementById('adminEmail').value;
+      const project = document.getElementById('completionProject').value;
+      const userId = document.getElementById('userId').value;
 
-    <section id="login-section" class="section">
-      <div class="container">
-        <div class="card">
-          <h2>Login / Register</h2>
-          <form id="auth-form">
-            <input type="email" id="email" placeholder="Email" required />
-            <input
-              type="password"
-              id="password"
-              placeholder="Password"
-              required
-            />
-            <div class="auth-actions">
-              <button type="submit" id="login-btn">Login</button>
-              <button type="button" id="register-btn">Register</button>
-            </div>
-          </form>
-          <p id="auth-message"></p>
-        </div>
-      </div>
-    </section>
-
-    <footer class="footer">
-      <div class="container">
-        <p>&copy; 2024 ProjectFlow. All rights reserved.</p>
-      </div>
-    </footer>
-
-    <script type="module" src="dist/index.js"></script>
-    <script>
-      document
-        .getElementById("toggle-dark-mode")
-        ?.addEventListener("click", () => {
-          document.body.classList.toggle("dark");
-        });
-    </script>
-  </body>
+      const res = await fetch('/mailer/notify-completion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ adminEmail, project, userId }),
+      });
+      const data = await res.json();
+      document.getElementById('completeResponse').textContent = data.message || 'Done';
+    }
+  </script>
+</body>
 </html>
