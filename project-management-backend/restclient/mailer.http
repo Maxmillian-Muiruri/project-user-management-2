@@ -1,0 +1,9 @@
+### Test project completion email to admin
+POST http://localhost:3000/mailer/test-completion
+Content-Type: application/json
+
+{
+  "adminEmail": "safenot094@gmail.com",
+  "userName": "Harrison",
+  "project": "AI Research"
+}

@@ -92,4 +92,15 @@ export class UserService {
     if (!user) throw new NotFoundException('User not found');
     await this.prisma.user.delete({ where: { id } });
   }
+
+               //buffer_for_mailer
+               //buffer_for_mailer
+               //buffer_for_mailer
+
+
+
+  async getUserById(id: string): Promise<PrismaUser | null> {
+  return this.prisma.user.findUnique({ where: { id } });
+}
+
 }

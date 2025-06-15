@@ -1,6 +1,107 @@
+// import {
+//   Injectable,
+//   ConflictException,
+//   NotFoundException,
+//   ForbiddenException,
+// } from '@nestjs/common';
+// import { Project } from './interface/project.interface';
+
+// @Injectable()
+// export class ProjectService {
+//   private projects: Project[] = [];
+//   private readonly adminEmail = 'admin@example.com'; // Only one admin
+
+//   // Helper to check admin
+//   private isAdmin(userEmail: string): boolean {
+//     return userEmail === this.adminEmail;
+//   }
+
+//   // Admin: Create a project
+//   createProject(data: Project, userEmail: string): Project {
+//     if (!this.isAdmin(userEmail)) {
+//       throw new ForbiddenException('Only admin can create projects');
+//     }
+//     const existing = this.projects.find((p) => p.title === data.title);
+//     if (existing) {
+//       throw new ConflictException(
+//         `Project with title ${data.title} already exists`,
+//       );
+//     }
+//     const newProject: Project = {
+//       ...data,
+//       completed: typeof data.completed === 'boolean' ? data.completed : false,
+//       assignedUserId: undefined,
+//     };
+//     this.projects.push(newProject);
+//     return newProject;
+//   }
+
+//   // Admin: Get all projects
+//   getAllProjects(userEmail: string): Project[] {
+//     if (!this.isAdmin(userEmail)) {
+//       throw new ForbiddenException('Only admin can view all projects');
+//     }
+//     if (this.projects.length === 0) {
+//       throw new ConflictException('No projects found');
+//     }
+//     return this.projects;
+//   }
+
+//   // Admin: Assign a project to a user (one project per user)
+//   assignProjectToUser(
+//     projectTitle: string,
+//     userId: string,
+//     userEmail: string,
+//   ): string {
+//     if (!this.isAdmin(userEmail)) {
+//       throw new ForbiddenException('Only admin can assign projects');
+//     }
+//     const project = this.projects.find((p) => p.title === projectTitle);
+//     if (!project) throw new NotFoundException('Project not found');
+//     if (project.assignedUserId)
+//       throw new ConflictException('Project already assigned');
+//     const alreadyAssigned = this.projects.find(
+//       (p) => p.assignedUserId === userId,
+//     );
+//     if (alreadyAssigned)
+//       throw new ConflictException('User already assigned to a project');
+//     project.assignedUserId = userId;
+//     // TODO: Send email to user about assignment
+//     return `Project '${projectTitle}' assigned to user '${userId}'`;
+//   }
+
+//   // Admin: Delete a project
+//   deleteProject(projectTitle: string, userEmail: string): { message: string } {
+//     if (!this.isAdmin(userEmail)) {
+//       throw new ForbiddenException('Only admin can delete projects');
+//     }
+//     const idx = this.projects.findIndex((p) => p.title === projectTitle);
+//     if (idx === -1) throw new NotFoundException('Project not found');
+//     this.projects.splice(idx, 1);
+//     return { message: `Project '${projectTitle}' deleted` };
+//   }
+
+//   // User: View assigned project
+//   getUserAssignedProject(userId: string): Project | { message: string } {
+//     const project = this.projects.find((p) => p.assignedUserId === userId);
+//     if (!project) return { message: 'No project assigned' };
+//     return project;
+//   }
+
+//   // User: Mark project as completed, admin gets notified
+//   completeProject(userId: string): { message: string } {
+//     const project = this.projects.find((p) => p.assignedUserId === userId);
+//     if (!project) throw new NotFoundException('No project assigned');
+//     project.completed = true;
+//     // TODO: Send email to admin about completion
+//     return {
+//       message: `Project '${project.title}' marked as completed. Admin notified.`,
+//     };
+//   }
+// }
+
 /* eslint-disable prettier/prettier */
 /* eslint-disable @typescript-eslint/no-redundant-type-constituents */
-
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 
 import {
@@ -14,6 +115,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { MailerService } from '../mailer/mailer.service';
 import { SendEmailDto } from '../mailer/dto/send-email.dto';
 import { CreateProjectDto } from './dto/create-project.dto';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class ProjectService {
@@ -23,6 +125,7 @@ export class ProjectService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly mailerService: MailerService,
+    private readonly userService: UserService,
   ) {}
 
   // Helper to check admin
@@ -78,14 +181,12 @@ export class ProjectService {
       throw new ForbiddenException('Only admin can assign projects');
     }
 
-    // Only DB operations inside the transaction
-    await this.prisma.$transaction(async (prisma) => {
-      // Check if user exists
-      const user = await prisma.user.findUnique({ where: { id: userId } });
-      if (!user) {
-        throw new NotFoundException('Assigned user does not exist');
-      }
+    const user = await this.userService.getUserById(userId);
+    if (!user) {
+      throw new NotFoundException('Assigned user does not exist');
+    }
 
+    await this.prisma.$transaction(async (prisma) => {
       const project = await prisma.project.findUnique({
         where: { title: projectTitle },
         include: { assignedUser: true },
@@ -111,21 +212,16 @@ export class ProjectService {
       });
     });
 
-    // Send email OUTSIDE the transaction
     try {
-      const email: SendEmailDto = {
-        to: `${userId}@example.com`, // In real app, get email from user record
-        subject: 'Project Assignment',
-        text: `You have been assigned to project: ${projectTitle}`,
-        project: '',
-        name: '',
-      };
-      await this.mailerService.sendMail(email);
+      await this.mailerService.sendProjectAssignedEmail(
+        user.email,
+        user.name,
+        projectTitle,
+      );
     } catch (emailError) {
       this.logger.error(
         `Failed to send assignment email: ${emailError.message}`,
       );
-      // Don't fail the operation if email fails
     }
 
     return `Project '${projectTitle}' assigned to user '${userId}'`;
