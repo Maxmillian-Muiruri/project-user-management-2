@@ -1,0 +1,47 @@
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMWU0NGU2Ny1hNGU3LTRmZGYtOTE5Yi1hYjc1ZjMxNzZmZmYiLCJlbWFpbCI6Im1heG1pbGxpbnNzQGV4YW1wbGUuY29tIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NTAwNjY0MzEsImV4cCI6MTc1MDA3MDAzMX0.Hgad9YOJv8ZdPuKua112G62B1UEVD0CCaEl6mD1an5U
+
+@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMWU0NGU2Ny1hNGU3LTRmZGYtOTE5Yi1hYjc1ZjMxNzZmZmYiLCJlbWFpbCI6Im1heG1pbGxpbnNzQGV4YW1wbGUuY29tIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NTAwNjY0MzEsImV4cCI6MTc1MDY3MTIzMX0.UhORxzD9E6_4Gj76mpmNkMIf5GJnv0sBlNX1FFKDIyU
+
+### Register a new user
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+  "email": "maxmillinss@example.com",
+  "password": "testpasswordmaxxx",
+  "name": "maxmillin"
+}
+
+### Login with email and password
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "maxmillinss@example.com",
+  "password": "testpasswordmaxxx"
+}
+
+### Refresh access token
+POST http://localhost:3000/auth/refresh
+Content-Type: application/json
+Authorization: Bearer {{refreshToken}}
+
+{}
+
+### Get current user profile
+GET http://localhost:3000/auth/me
+Authorization: Bearer {{accessToken}}
+
+### Logout
+POST http://localhost:3000/auth/logout
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### Logout from all sessions
+POST http://localhost:3000/auth/logout-all
+Content-Type: application/json
+Authorization: Bearer {{accessToken}}

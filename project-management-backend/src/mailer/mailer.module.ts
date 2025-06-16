@@ -31,11 +31,5 @@ import * as path from 'path';
   providers: [MailerService],
   exports: [MailerService],
 })
-<<<<<<< HEAD
 export class MailerModule {}
-=======
 export class CustomMailerModule {}
-
-
-
->>>>>>> d389bbcecc40fba12a582aace33a1b2d88758d6a

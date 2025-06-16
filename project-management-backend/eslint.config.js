@@ -1,6 +1,4 @@
-import { ESLint } from 'eslint';
-
-export default {
+module.exports = {
   root: true,
   parser: '@typescript-eslint/parser',
   parserOptions: {

@@ -16,14 +16,15 @@ POST http://localhost:3000/project/assign?userEmail=admin@example.com
 Content-Type: application/json
 
 {
-  "projectTitle": "Test Project",
-  "userId": "357c0841-763e-4e56-92bc-eb192020b52a"
+  "projectTitle": "Test Projects",
+  "userId": "d67b3298-3e22-48db-ab77-881b6a7eb93",
+  "email":"maxmillianmuiruri@gmail.com"
 }
 
 
 
 ##### Get all projects assigned to a user
-GET http://localhost:3000/project/assigned?userId=user123
+GET http://localhost:3000/project/assigned?userId=357c0841-763e-4e56-92bc-eb192020b52a
 
 ### Complete a project
 POST http://localhost:3000/project/complete
@@ -39,9 +40,10 @@ POST http://localhost:3000/users
 Content-Type: application/json
 
 {
-  "email": "user@example.com",
-  "password": "user123",
-  "name": "Regular User"
+  "email": "users@example.com",
+  "password": "userss123",
+  "name": "Regular User",
+  "role": "ADMIN"
 }
 
 
@@ -63,5 +65,5 @@ Content-Type: application/json
 }
 
 ### Delete a user
-DELETE http://localhost:3000/users/1749980213261
+DELETE http://localhost:3000/users/357c0841-763e-4e56-92bc-eb192020b52a
 
