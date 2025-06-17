@@ -7,7 +7,8 @@ import { ProjectModule } from './project/project.module';
 import { UserService } from './user/user.service';
 import { UserModule } from './user/user.module';
 import { PrismaModule } from './prisma/prisma.module';
-import { CustomMailerModule } from './mailer/mailer.module';
+import { MailerModule } from './mailer/mailer.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { CustomMailerModule } from './mailer/mailer.module';
     ProjectModule,
     UserModule,
     PrismaModule,
-    CustomMailerModule,
+    MailerModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService, ProjectService, UserService],

@@ -9,11 +9,12 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dtos';
 import { User as PrismaUser } from '@prisma/client';
+import { Role } from '@prisma/client';
 
 type UserResponse = Omit<PrismaUser, 'password'>;
-
 @Injectable()
 export class UserService {
+  // prisma = new PrismaClient();
   constructor(private readonly prisma: PrismaService) {}
 
   private exclude<T extends Record<string, any>, Key extends keyof T>(
@@ -38,7 +39,7 @@ export class UserService {
       data: {
         ...createUserDto,
         password: hashedPassword,
-        role: 'USER',
+        role: Role[createUserDto.role],
       },
     });
 
