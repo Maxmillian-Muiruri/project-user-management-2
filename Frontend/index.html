@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project Management System</title>
+    <link rel="stylesheet" href="./styles/main.css" />
+  </head>
+  <body>
+    <div id="app">
+      <!-- Navigation -->
+      <nav class="navbar">
+        <div class="container">
+          <a href="#" class="logo">Project Manager</a>
+          <div class="nav-links">
+            <a href="#" id="dashboard-link">Dashboard</a>
+            <a href="#" id="projects-link">Projects</a>
+            <a href="#" id="users-link" class="admin-only">Users</a>
+            <div class="auth-buttons">
+              <button id="login-btn" class="btn">Login</button>
+              <button id="logout-btn" class="btn btn-outline">Logout</button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <!-- Main Content -->
+      <main class="container">
+        <!-- Login Form -->
+        <div id="login-section" class="card">
+          <h2>Login</h2>
+          <form id="login-form">
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="email" id="email" required />
+            </div>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" id="password" required />
+            </div>
+            <button type="submit" class="btn">Login</button>
+          </form>
+          <p>
+            Don't have an account? <a href="#" id="show-register">Register</a>
+          </p>
+        </div>
+
+        <!-- Register Form -->
+        <div id="register-section" class="card hidden">
+          <h2>Register</h2>
+          <form id="register-form">
+            <div class="form-group">
+              <label for="reg-name">Name</label>
+              <input type="text" id="reg-name" required />
+            </div>
+            <div class="form-group">
+              <label for="reg-email">Email</label>
+              <input type="email" id="reg-email" required />
+            </div>
+            <div class="form-group">
+              <label for="reg-password">Password</label>
+              <input type="password" id="reg-password" required />
+            </div>
+            <div class="form-group">
+              <label for="reg-confirm-password">Confirm Password</label>
+              <input type="password" id="reg-confirm-password" required />
+            </div>
+            <button type="submit" class="btn">Register</button>
+          </form>
+          <p>Already have an account? <a href="#" id="show-login">Login</a></p>
+        </div>
+
+        <!-- Dashboard -->
+        <div id="dashboard" class="hidden">
+          <h1>Welcome, <span id="user-name"></span></h1>
+          <div class="stats">
+            <div class="stat-card">
+              <h3>Total Projects</h3>
+              <p id="total-projects">0</p>
+            </div>
+            <div class="stat-card">
+              <h3>Active Projects</h3>
+              <p id="active-projects">0</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Projects Section -->
+        <div id="projects-section" class="hidden">
+          <div class="section-header">
+            <h2>Projects</h2>
+            <button id="create-project-btn" class="btn">Create Project</button>
+          </div>
+
+          <!-- Project List -->
+          <div id="projects-list" class="grid">
+            <!-- Projects will be loaded here -->
+          </div>
+
+          <!-- Create Project Modal -->
+          <div id="create-project-modal" class="modal hidden">
+            <div class="modal-content">
+              <span class="close">&times;</span>
+              <h2>Create New Project</h2>
+              <form id="create-project-form">
+                <div class="form-group">
+                  <label for="project-title">Title</label>
+                  <input type="text" id="project-title" required />
+                </div>
+                <div class="form-group">
+                  <label for="project-description">Description</label>
+                  <textarea id="project-description" required></textarea>
+                </div>
+                <div class="form-group">
+                  <label for="project-duedate">Due Date</label>
+                  <input type="date" id="project-duedate" required />
+                </div>
+                <button type="submit" class="btn">Create</button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <!-- Users Section (Admin Only) -->
+        <div id="users-section" class="hidden">
+          <div class="section-header">
+            <h2>User Management</h2>
+          </div>
+          <table id="users-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Users will be loaded here -->
+            </tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+
+    <script src="./dist/main.js"></script>
+    <script src="./dist/auth.js"></script>
+    <script src="./dist/projects.js"></script>
+    <script src="./dist/users.js"></script>
+  </body>
+</html>
