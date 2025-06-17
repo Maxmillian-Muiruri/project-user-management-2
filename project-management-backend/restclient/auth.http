@@ -1,15 +1,16 @@
-@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMWU0NGU2Ny1hNGU3LTRmZGYtOTE5Yi1hYjc1ZjMxNzZmZmYiLCJlbWFpbCI6Im1heG1pbGxpbnNzQGV4YW1wbGUuY29tIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NTAwNjY0MzEsImV4cCI6MTc1MDA3MDAzMX0.Hgad9YOJv8ZdPuKua112G62B1UEVD0CCaEl6mD1an5U
+@accessToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3MjQ0YTlmMC00YjA3LTRiYTUtYWJmOC1mMmU1OWVmYjY3ZWEiLCJlbWFpbCI6InBldGVyQGV4YW1wbGUuY29tIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NTAxNDc0NTUsImV4cCI6MTc1MDE1MTA1NX0.IrbmHWITzK00FhzaN12DR-X5NPjZzZWm7J2bXtY-tcU
 
-@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMWU0NGU2Ny1hNGU3LTRmZGYtOTE5Yi1hYjc1ZjMxNzZmZmYiLCJlbWFpbCI6Im1heG1pbGxpbnNzQGV4YW1wbGUuY29tIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NTAwNjY0MzEsImV4cCI6MTc1MDY3MTIzMX0.UhORxzD9E6_4Gj76mpmNkMIf5GJnv0sBlNX1FFKDIyU
+@refreshToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3MjQ0YTlmMC00YjA3LTRiYTUtYWJmOC1mMmU1OWVmYjY3ZWEiLCJlbWFpbCI6InBldGVyQGV4YW1wbGUuY29tIiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3NTAxNDc0NTUsImV4cCI6MTc1MDc1MjI1NX0.9rfWpbd2V3_NaowZ6Lq4ANwT88ZFIW3YhOBs5-sA5Qs
 
 ### Register a new user
 POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
-  "email": "maxmillinss@example.com",
-  "password": "testpasswordmaxxx",
-  "name": "maxmillin"
+  "email": "peters@example.com",
+  "password": "SecurePass123!",
+  "confirmPassword": "SecurePass123!",
+  "name": "peter"
 }
 
 ### Login with email and password
@@ -17,8 +18,8 @@ POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-  "email": "maxmillinss@example.com",
-  "password": "testpasswordmaxxx"
+  "email": "peter@example.com",
+  "password": "testpasswordpeter"
 }
 
 ### Refresh access token

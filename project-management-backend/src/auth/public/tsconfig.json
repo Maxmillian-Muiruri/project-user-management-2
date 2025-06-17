@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "ESNext",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "outDir": "./dist",
+    "rootDir": "./",
+    "moduleResolution": "node",
+    "allowJs": true,
+    "noEmitOnError": true
+  },
+  "include": ["main.ts"],
+  "exclude": ["node_modules"]
+}

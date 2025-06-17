@@ -1,0 +1,19 @@
+{
+  "name": "project-management-frontend",
+  "version": "1.0.0",
+  "description": "Frontend for Project Management System",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "start": "npx serve public"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "serve": "^14.2.0"
+  }
+}
